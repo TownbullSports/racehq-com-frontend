@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RaceHQ — Everything Needed to Get to The Starting Line</title>
+<style>
+  /* ============================================================
+     TOKENS
+  ============================================================ */
+  :root {
+    --purple:    #1F053B;
+    --yellow:    #F2CF00;
+    --white:     #ffffff;
+    --accent-v:  #B026FF;
+    --accent-p:  #FF12F0;
+    --silver:    #ECEDED;
+    --slate:     #666C6D;
+    --black:     #000000;
+
+    --font: 'Helvetica Neue', Arial, sans-serif;
+    --nav-h: 68px;
+
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+
+    --shadow-card: 0 2px 16px rgba(31,5,59,.10);
+    --shadow-hover: 0 8px 36px rgba(31,5,59,.18);
+  }
+
+  /* ============================================================
+     RESET + BASE
+  ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    font-weight: 400;
+    color: var(--black);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+  img { display: block; max-width: 100%; }
+  a { text-decoration: none; color: inherit; }
+  button { cursor: pointer; font-family: var(--font); border: none; background: none; }
+
+  /* ============================================================
+     NAVIGATION
+  ============================================================ */
+  #nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    height: var(--nav-h);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(31,5,59,.08);
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    gap: 0;
+    transition: transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s;
+  }
+  #nav.hidden { transform: translateY(-100%); }
+  #nav.scrolled { box-shadow: 0 2px 20px rgba(31,5,59,.12); }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: auto;
+    flex-shrink: 0;
+  }
+  .nav-logo svg { height: 36px; width: auto; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    list-style: none;
+    margin-right: 20px;
+  }
+  .nav-links a {
+    display: block;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--purple);
+    border-radius: var(--radius-sm);
+    transition: background .18s, color .18s;
+  }
+  .nav-links a:hover { background: var(--silver); color: var(--purple); }
+  .nav-links a.active { color: var(--accent-v); }
+
+  .nav-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--silver);
+    border-radius: 999px;
+    padding: 8px 16px;
+  }
+  .nav-search input {
+    border: none;
+    background: none;
+    outline: none;
+    font-family: var(--font);
+    font-size: 13px;
+    width: 160px;
+    color: var(--purple);
+  }
+  .nav-search input::placeholder { color: var(--slate); }
+  .nav-search svg { color: var(--slate); flex-shrink: 0; }
+
+  /* ============================================================
+     PAGE WRAPPER + VIEW TOGGLE
+  ============================================================ */
+  #page-home, #page-races {
+    display: block;
+  }
+  #page-races { display: none; }
+
+  /* ============================================================
+     HERO — CINEMATIC FULL-WIDTH
+  ============================================================ */
+  .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.pexels.com/photos/1608054/pexels-photo-1608054.jpeg?auto=compress&cs=tinysrgb&w=1920');
+    background-size: cover;
+    background-position: center 30%;
+    transform: scale(1.04);
+    animation: heroZoom 18s ease-in-out infinite alternate;
+  }
+  @keyframes heroZoom {
+    from { transform: scale(1.04); }
+    to   { transform: scale(1.00); }
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(31,5,59,.88) 0%,
+      rgba(31,5,59,.45) 40%,
+      rgba(31,5,59,.10) 70%,
+      transparent 100%
+    );
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 60px 80px;
+    max-width: 860px;
+    animation: heroFadeUp .9s .2s both;
+  }
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-label {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--purple);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: -.02em;
+  }
+  .hero h1 span { color: var(--yellow); }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 300;
+    color: rgba(255,255,255,.82);
+    margin-bottom: 36px;
+    max-width: 520px;
+    line-height: 1.6;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--yellow);
+    color: var(--purple);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 999px;
+    transition: transform .18s, box-shadow .18s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242,207,0,.4); }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid rgba(255,255,255,.5);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 999px;
+    transition: border-color .18s, background .18s;
+  }
+  .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.1); }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    right: 60px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255,255,255,.5);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .hero-scroll-hint::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: rgba(255,255,255,.4);
+  }
+
+  /* ============================================================
+     CATEGORY SCROLLER
+  ============================================================ */
+  .categories-section {
+    background: var(--purple);
+    padding: 0;
+    overflow: hidden;
+  }
+  .categories-track-wrap {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 40px;
+    gap: 0;
+  }
+  .categories-track-wrap::-webkit-scrollbar { display: none; }
+  .cat-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 28px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: border-color .18s, background .18s;
+    white-space: nowrap;
+  }
+  .cat-item:hover, .cat-item.active {
+    border-bottom-color: var(--yellow);
+    background: rgba(255,255,255,.05);
+  }
+  .cat-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cat-icon svg { width: 22px; height: 22px; fill: var(--yellow); }
+  .cat-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.85);
+  }
+  .cat-item:hover .cat-label,
+  .cat-item.active .cat-label { color: var(--white); }
+
+  /* ============================================================
+     SECTION UTILITIES
+  ============================================================ */
+  .section { padding: 80px 60px; }
+  .section-sm { padding: 56px 60px; }
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent-v);
+    margin-bottom: 12px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent-v);
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--purple);
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--slate);
+    margin-bottom: 48px;
+    max-width: 520px;
+    line-height: 1.6;
+  }
+  .section-header-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .view-all {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-v);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--accent-v);
+    transition: opacity .18s;
+  }
+  .view-all:hover { opacity: .7; }
+
+  /* ============================================================
+     FEATURED RACES GRID (Editorial)
+  ============================================================ */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+  }
+  .race-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    background: var(--purple);
+    box-shadow: var(--shadow-card);
+    transition: transform .22s, box-shadow .22s;
+    cursor: pointer;
+  }
+  .race-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+  .race-card--hero {
+    grid-row: 1 / 3;
+    min-height: 540px;
+  }
+  .race-card--std { min-height: 240px; }
+
+  .race-card-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform .4s;
+  }
+  .race-card:hover .race-card-img { transform: scale(1.03); }
+  .race-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(31,5,59,.85) 0%, rgba(31,5,59,.2) 55%, transparent 100%);
+  }
+  .race-card-body {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+  }
+  .race-card-cat {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--purple);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    align-self: flex-start;
+  }
+  .race-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .race-card--hero .race-card-title { font-size: 1.7rem; }
+  .race-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .race-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,.75);
+  }
+  .race-card-meta svg { width: 12px; height: 12px; opacity: .7; }
+
+  /* ============================================================
+     UPCOMING RACES STRIP
+  ============================================================ */
+  .races-strip-section { background: var(--silver); }
+  .races-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .race-strip-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer;
+  }
+  .race-strip-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+  .race-strip-img {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+  }
+  .race-strip-body { padding: 18px; }
+  .race-strip-cat {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-v);
+    margin-bottom: 6px;
+  }
+  .race-strip-name {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .race-strip-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .race-strip-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--slate);
+  }
+  .race-strip-meta svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .race-strip-footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--silver);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .race-strip-dist {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .dist-pill {
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--silver);
+    color: var(--purple);
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: .06em;
+  }
+  .reg-link {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-v);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ============================================================
+     EDITORS PICKS
+  ============================================================ */
+  .editors-picks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+  }
+  .ep-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--silver);
+    transition: box-shadow .2s, transform .2s;
+    cursor: pointer;
+  }
+  .ep-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+  .ep-card-img {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .ep-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--purple);
+    color: var(--yellow);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+  .ep-body { padding: 22px; }
+  .ep-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent-p);
+    margin-bottom: 8px;
+  }
+  .ep-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .ep-desc {
+    font-size: .875rem;
+    color: var(--slate);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+  .ep-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--slate);
+  }
+  .ep-read {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-v);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  /* ============================================================
+     GEAR SECTION
+  ============================================================ */
+  .gear-section { background: var(--purple); }
+  .gear-section .section-label { color: var(--yellow); }
+  .gear-section .section-label::before { background: var(--yellow); }
+  .gear-section .section-title { color: var(--white); }
+  .gear-section .section-sub { color: rgba(255,255,255,.65); }
+  .gear-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .gear-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+  }
+  .gear-card:hover { background: rgba(255,255,255,.11); transform: translateY(-4px); }
+  .gear-img {
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+  }
+  .gear-body { padding: 14px; }
+  .gear-brand { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--yellow); margin-bottom: 4px; }
+  .gear-name { font-size: .875rem; font-weight: 500; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .gear-price { font-size: .875rem; font-weight: 700; color: rgba(255,255,255,.6); }
+  .gear-cta-row {
+    margin-top: 48px;
+    text-align: center;
+  }
+  .btn-ghost-yellow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 999px;
+    transition: background .18s, color .18s;
+  }
+  .btn-ghost-yellow:hover { background: var(--yellow); color: var(--purple); }
+
+  /* ============================================================
+     NEWSLETTER
+  ============================================================ */
+  .newsletter-section {
+    background: linear-gradient(135deg, var(--accent-v) 0%, var(--accent-p) 100%);
+    padding: 72px 60px;
+    text-align: center;
+  }
+  .newsletter-inner { max-width: 560px; margin: 0 auto; }
+  .newsletter-section .section-label {
+    color: rgba(255,255,255,.7);
+    justify-content: center;
+  }
+  .newsletter-section .section-label::before { background: rgba(255,255,255,.5); }
+  .newsletter-section .section-title { color: var(--white); margin-bottom: 12px; }
+  .newsletter-section p {
+    color: rgba(255,255,255,.8);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .newsletter-form {
+    display: flex;
+    gap: 10px;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .newsletter-form input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 999px;
+    background: rgba(255,255,255,.15);
+    color: var(--white);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .18s;
+  }
+  .newsletter-form input::placeholder { color: rgba(255,255,255,.6); }
+  .newsletter-form input:focus { border-color: rgba(255,255,255,.7); }
+  .btn-white {
+    flex-shrink: 0;
+    background: var(--white);
+    color: var(--accent-v);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    border-radius: 999px;
+    transition: opacity .18s;
+  }
+  .btn-white:hover { opacity: .88; }
+
+  /* ============================================================
+     INSTAGRAM STRIP
+  ============================================================ */
+  .insta-section { background: var(--white); padding: 56px 0; }
+  .insta-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 60px;
+    margin-bottom: 28px;
+  }
+  .insta-handle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple);
+  }
+  .insta-handle svg { width: 24px; height: 24px; fill: var(--accent-p); }
+  .insta-follow {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-p);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--accent-p);
+    padding-bottom: 2px;
+  }
+  .insta-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+  .insta-tile {
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .insta-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(31,5,59,0);
+    transition: background .2s;
+  }
+  .insta-tile:hover::after { background: rgba(31,5,59,.4); }
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  footer {
+    background: var(--purple);
+    padding: 64px 60px 32px;
+    color: rgba(255,255,255,.7);
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 56px;
+  }
+  .footer-brand svg { height: 40px; margin-bottom: 20px; }
+  .footer-brand p {
+    font-size: .875rem;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 260px;
+  }
+  .footer-socials { display: flex; gap: 12px; }
+  .social-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .18s;
+  }
+  .social-btn:hover { background: rgba(255,255,255,.18); }
+  .social-btn svg { width: 16px; height: 16px; fill: rgba(255,255,255,.7); }
+  .footer-col h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a {
+    font-size: .875rem;
+    font-weight: 300;
+    color: rgba(255,255,255,.6);
+    transition: color .18s;
+  }
+  .footer-col ul a:hover { color: var(--yellow); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom p { font-size: 12px; font-weight: 300; }
+  .footer-bottom a { color: rgba(255,255,255,.5); }
+  .footer-bottom a:hover { color: var(--yellow); }
+
+  /* ============================================================
+     RACES PAGE
+  ============================================================ */
+  .races-page-hero {
+    height: 320px;
+    background-image: url('https://images.pexels.com/photos/2343465/pexels-photo-2343465.jpeg?auto=compress&cs=tinysrgb&w=1920');
+    background-size: cover;
+    background-position: center 40%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+  }
+  .races-page-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(31,5,59,.85) 0%, rgba(31,5,59,.2) 100%);
+  }
+  .races-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 60px 48px;
+  }
+  .races-hero-content h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -.02em;
+    margin-bottom: 8px;
+  }
+  .races-hero-content p {
+    font-size: 1rem;
+    color: rgba(255,255,255,.7);
+    font-weight: 300;
+  }
+
+  .races-filters-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--silver);
+    padding: 0 60px;
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 100;
+  }
+  .filters-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters-row::-webkit-scrollbar { display: none; }
+  .filter-pill {
+    flex-shrink: 0;
+    padding: 18px 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .18s, border-color .18s;
+  }
+  .filter-pill:hover, .filter-pill.active { color: var(--purple); border-bottom-color: var(--yellow); }
+
+  .races-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    min-height: 60vh;
+  }
+  .races-sidebar {
+    border-right: 1px solid var(--silver);
+    padding: 36px 28px;
+    position: sticky;
+    top: calc(var(--nav-h) + 57px);
+    height: calc(100vh - var(--nav-h) - 57px);
+    overflow-y: auto;
+  }
+  .filter-group { margin-bottom: 32px; }
+  .filter-group h5 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 14px;
+  }
+  .filter-options { display: flex; flex-direction: column; gap: 8px; }
+  .filter-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--slate);
+    transition: color .15s;
+  }
+  .filter-check:hover { color: var(--purple); }
+  .filter-check input { accent-color: var(--accent-v); width: 15px; height: 15px; }
+  .filter-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--silver);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 24px;
+  }
+  .filter-search input {
+    border: none; background: none; outline: none;
+    font-family: var(--font); font-size: 13px; width: 100%; color: var(--purple);
+  }
+  .filter-search input::placeholder { color: var(--slate); }
+
+  .races-results {
+    padding: 40px 48px;
+  }
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .results-count { font-size: 14px; color: var(--slate); font-weight: 300; }
+  .results-count strong { color: var(--purple); font-weight: 700; }
+  .sort-select {
+    font-family: var(--font);
+    font-size: 13px;
+    padding: 8px 14px;
+    border: 1px solid var(--silver);
+    border-radius: var(--radius-sm);
+    color: var(--purple);
+    outline: none;
+    cursor: pointer;
+  }
+  .races-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .dir-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--silver);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .dir-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+  .dir-card-img {
+    height: 190px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .dir-card-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--yellow);
+    color: var(--purple);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .dir-card-body { padding: 18px; }
+  .dir-card-cat {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-v);
+    margin-bottom: 6px;
+  }
+  .dir-card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 10px;
+    line-height: 1.25;
+  }
+  .dir-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .dir-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--slate);
+    font-weight: 300;
+  }
+  .dir-card-meta svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .dir-card-footer {
+    border-top: 1px solid var(--silver);
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dir-card-dists { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dir-card-reg {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--purple);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 999px;
+    transition: background .18s;
+  }
+  .dir-card-reg:hover { background: var(--accent-v); }
+
+  /* ============================================================
+     RACEHQ.IO BANNER
+  ============================================================ */
+  .racehqio-banner {
+    background: linear-gradient(135deg, var(--purple) 0%, #2d0f50 100%);
+    padding: 64px 60px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+  }
+  .racehqio-banner h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -.02em;
+    margin-bottom: 12px;
+  }
+  .racehqio-banner p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(255,255,255,.7);
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  /* ============================================================
+     MOBILE NAV TOGGLE (simplified)
+  ============================================================ */
+  .hamburger { display: none; }
+
+  @media (max-width: 1200px) {
+    .gear-grid { grid-template-columns: repeat(3, 1fr); }
+    .featured-grid { grid-template-columns: 1fr 1fr; }
+    .race-card--hero { grid-row: auto; min-height: 340px; }
+  }
+  @media (max-width: 900px) {
+    .section, .section-sm { padding: 56px 24px; }
+    .hero-content { padding: 0 24px 60px; }
+    .races-strip { grid-template-columns: repeat(2, 1fr); }
+    .editors-picks-grid { grid-template-columns: 1fr 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .races-layout { grid-template-columns: 1fr; }
+    .races-sidebar { display: none; }
+    .races-grid { grid-template-columns: repeat(2, 1fr); }
+    #nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .insta-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .featured-grid { grid-template-columns: 1fr; }
+    .races-strip { grid-template-columns: 1fr; }
+    .editors-picks-grid { grid-template-columns: 1fr; }
+    .races-grid { grid-template-columns: 1fr; }
+    .gear-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-top { grid-template-columns: 1fr; }
+    .insta-grid { grid-template-columns: repeat(2, 1fr); }
+    .newsletter-form { flex-direction: column; }
+    .racehqio-banner { grid-template-columns: 1fr; }
+    .races-filters-bar, .races-hero-content, .insta-header { padding-left: 20px; padding-right: 20px; }
+    .races-results { padding: 28px 20px; }
+    .racehqio-banner { padding: 48px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+  NAVIGATION
+============================================================ -->
+<nav id="nav">
+  <a class="nav-logo" href="#" onclick="showPage('home')">
+    <span style="display:inline-block;height:28px;width:auto;filter:brightness(0) saturate(100%) invert(14%) sepia(98%) saturate(2073%) hue-rotate(261deg) brightness(45%);">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="430 345 475 100" height="28" width="auto"> <path fill-rule="nonzero" fill="#ffffff" d="M 461.738281 396.394531 L 447.339844 396.394531 L 447.339844 367.480469 L 461.6875 367.601562 L 461.738281 367.601562 C 469.675781 367.601562 476.136719 374.058594 476.136719 381.996094 C 476.136719 389.9375 469.675781 396.394531 461.738281 396.394531 M 488.527344 381.996094 C 488.527344 367.234375 476.523438 355.226562 461.765625 355.207031 L 434.949219 355.207031 L 434.949219 423.558594 L 447.339844 423.558594 L 447.339844 396.773438 L 473.648438 423.558594 L 491.808594 423.558594 L 473.722656 405.953125 C 482.496094 401.546875 488.527344 392.460938 488.527344 381.996094 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 449.839844 393.894531 L 461.738281 393.894531 C 468.296875 393.894531 473.632812 388.554688 473.632812 381.996094 C 473.632812 375.4375 468.296875 370.101562 461.738281 370.101562 L 449.839844 370 Z M 474.695312 421.058594 L 485.65625 421.058594 L 469.464844 405.292969 L 472.601562 403.71875 C 480.882812 399.558594 486.027344 391.234375 486.027344 381.996094 C 486.027344 368.617188 475.140625 357.722656 461.761719 357.707031 L 437.449219 357.707031 L 437.449219 421.058594 L 444.839844 421.058594 L 444.839844 364.960938 L 461.707031 365.101562 C 471.054688 365.101562 478.632812 372.679688 478.632812 381.996094 C 478.632812 391.3125 471.054688 398.894531 461.738281 398.894531 L 452.929688 398.894531 Z M 497.957031 426.058594 L 472.597656 426.058594 L 449.839844 402.886719 L 449.839844 426.058594 L 432.449219 426.058594 L 432.449219 352.707031 L 461.765625 352.707031 C 477.902344 352.726562 491.027344 365.863281 491.027344 381.996094 C 491.027344 391.980469 486.050781 401.074219 477.832031 406.464844 Z M 497.957031 426.058594 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 506.582031 423.375 L 520.121094 423.375 L 543.023438 381.28125 L 567.050781 423.375 L 581.496094 423.375 L 542.761719 354.820312 Z M 506.582031 423.375 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 568.503906 420.878906 L 577.210938 420.878906 L 542.835938 360.035156 L 510.730469 420.878906 L 518.636719 420.878906 L 542.972656 376.144531 Z M 585.78125 425.878906 L 565.601562 425.878906 L 543.074219 386.414062 L 521.609375 425.878906 L 502.4375 425.878906 L 542.6875 349.605469 Z M 585.78125 425.878906 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 616.257812 412.570312 C 603.371094 412.570312 592.886719 402.085938 592.886719 389.195312 C 592.886719 376.308594 603.371094 365.824219 616.257812 365.824219 C 622.222656 365.824219 627.902344 368.070312 632.25 372.152344 L 640.730469 363.113281 C 634.078125 356.871094 625.386719 353.429688 616.257812 353.429688 C 596.535156 353.429688 580.488281 369.472656 580.488281 389.195312 C 580.488281 408.917969 596.535156 424.964844 616.257812 424.964844 C 625.390625 424.964844 634.082031 421.523438 640.738281 415.273438 L 632.253906 406.238281 C 627.90625 410.320312 622.222656 412.570312 616.257812 412.570312 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 616.257812 355.929688 C 597.914062 355.929688 582.988281 370.851562 582.988281 389.195312 C 582.988281 407.539062 597.914062 422.464844 616.257812 422.464844 C 623.910156 422.464844 631.238281 419.863281 637.140625 415.09375 L 632.058594 409.683594 C 627.546875 413.171875 622.023438 415.066406 616.257812 415.066406 C 601.992188 415.066406 590.386719 403.464844 590.386719 389.195312 C 590.386719 374.929688 601.992188 363.324219 616.257812 363.324219 C 622.019531 363.324219 627.542969 365.21875 632.054688 368.707031 L 637.132812 363.292969 C 631.230469 358.527344 623.910156 355.929688 616.257812 355.929688 M 616.257812 427.464844 C 595.15625 427.464844 577.988281 410.296875 577.988281 389.195312 C 577.988281 368.097656 595.15625 350.929688 616.257812 350.929688 C 626.023438 350.929688 635.320312 354.609375 642.441406 361.289062 L 644.265625 363 L 632.359375 375.683594 L 630.535156 373.972656 C 626.65625 370.332031 621.582031 368.324219 616.257812 368.324219 C 604.746094 368.324219 595.386719 377.6875 595.386719 389.195312 C 595.386719 400.707031 604.746094 410.066406 616.257812 410.066406 C 621.585938 410.066406 626.660156 408.058594 630.539062 404.414062 L 632.363281 402.703125 L 644.269531 415.386719 L 642.449219 417.097656 C 635.328125 423.78125 626.027344 427.464844 616.257812 427.464844 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 794.886719 385.226562 L 762.261719 385.226562 L 762.261719 354.84375 L 748.507812 354.84375 L 748.507812 423.195312 L 762.261719 423.195312 L 762.261719 398.980469 L 794.886719 398.980469 L 794.886719 423.195312 L 808.640625 423.195312 L 808.640625 354.84375 L 794.886719 354.84375 Z M 794.886719 385.226562 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 797.386719 420.695312 L 806.140625 420.695312 L 806.140625 357.34375 L 797.386719 357.34375 L 797.386719 387.726562 L 759.761719 387.726562 L 759.761719 357.34375 L 751.007812 357.34375 L 751.007812 420.695312 L 759.761719 420.695312 L 759.761719 396.476562 L 797.386719 396.476562 Z M 811.140625 425.695312 L 792.386719 425.695312 L 792.386719 401.476562 L 764.761719 401.476562 L 764.761719 425.695312 L 746.007812 425.695312 L 746.007812 352.34375 L 764.761719 352.34375 L 764.761719 382.726562 L 792.386719 382.726562 L 792.386719 352.34375 L 811.140625 352.34375 Z M 811.140625 425.695312 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 654.054688 411.238281 L 654.054688 423.375 L 701.3125 423.375 L 701.3125 411.238281 L 666.191406 411.238281 L 666.191406 398.054688 L 694.53125 398.054688 L 694.53125 385.917969 L 666.191406 385.917969 L 666.191406 366.738281 L 701.3125 366.738281 L 701.3125 354.601562 L 654.054688 354.601562 Z M 654.054688 411.238281 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 656.554688 420.878906 L 698.816406 420.878906 L 698.816406 413.738281 L 663.695312 413.738281 L 663.695312 395.554688 L 692.03125 395.554688 L 692.03125 388.417969 L 663.695312 388.417969 L 663.695312 364.238281 L 698.816406 364.238281 L 698.816406 357.101562 L 656.554688 357.101562 Z M 703.816406 425.878906 L 651.554688 425.878906 L 651.554688 352.101562 L 703.816406 352.101562 L 703.816406 369.238281 L 668.695312 369.238281 L 668.695312 383.417969 L 697.03125 383.417969 L 697.03125 400.554688 L 668.695312 400.554688 L 668.695312 408.738281 L 703.816406 408.738281 Z M 703.816406 425.878906 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 832.90625 389.382812 C 832.90625 376.351562 843.507812 365.753906 856.535156 365.753906 C 869.566406 365.753906 880.167969 376.351562 880.167969 389.382812 C 880.167969 402.414062 869.566406 413.011719 856.535156 413.011719 C 843.507812 413.011719 832.90625 402.414062 832.90625 389.382812 M 888.054688 428.855469 C 888.054688 428.855469 880.128906 417.246094 879.703125 416.175781 C 887.214844 409.671875 891.980469 400.078125 891.980469 389.382812 C 891.980469 369.839844 876.082031 353.9375 856.535156 353.9375 C 836.992188 353.9375 821.089844 369.839844 821.089844 389.382812 C 821.089844 408.929688 836.992188 424.828125 856.535156 424.828125 C 861.121094 424.828125 865.496094 423.945312 869.519531 422.355469 C 870.109375 423.574219 878.132812 435.292969 878.132812 435.292969 Z M 888.054688 428.855469 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 856.535156 368.253906 C 844.882812 368.253906 835.40625 377.734375 835.40625 389.382812 C 835.40625 401.035156 844.882812 410.511719 856.535156 410.511719 C 868.1875 410.511719 877.667969 401.035156 877.667969 389.382812 C 877.667969 377.734375 868.1875 368.253906 856.535156 368.253906 M 856.535156 415.511719 C 842.128906 415.511719 830.40625 403.792969 830.40625 389.382812 C 830.40625 374.976562 842.128906 363.253906 856.535156 363.253906 C 870.941406 363.253906 882.667969 374.976562 882.667969 389.382812 C 882.667969 403.792969 870.941406 415.511719 856.535156 415.511719 M 870.765625 419.175781 L 871.773438 421.269531 C 872.148438 421.988281 875.441406 426.910156 878.820312 431.867188 L 884.550781 428.148438 C 880.105469 421.613281 877.695312 417.898438 877.378906 417.101562 L 876.722656 415.453125 L 878.066406 414.289062 C 885.320312 408.003906 889.480469 398.929688 889.480469 389.382812 C 889.480469 371.214844 874.703125 356.4375 856.535156 356.4375 C 838.371094 356.4375 823.589844 371.214844 823.589844 389.382812 C 823.589844 407.550781 838.371094 422.328125 856.535156 422.328125 C 860.683594 422.328125 864.742188 421.554688 868.601562 420.03125 Z M 877.449219 438.71875 L 876.070312 436.707031 C 874.207031 433.988281 870.429688 428.441406 868.464844 425.398438 C 864.613281 426.679688 860.613281 427.328125 856.535156 427.328125 C 835.613281 427.328125 818.589844 410.304688 818.589844 389.382812 C 818.589844 368.460938 835.613281 351.4375 856.535156 351.4375 C 877.460938 351.4375 894.480469 368.460938 894.480469 389.382812 C 894.480469 399.679688 890.28125 409.5 882.894531 416.644531 C 884.378906 418.953125 887.359375 423.402344 890.121094 427.445312 L 891.5625 429.558594 Z M 877.449219 438.71875 "/> </svg>
+    </span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('races'); return false;" id="nav-races">Races</a></li>
+    <li><a href="#">Gear</a></li>
+    <li><a href="https://racehq.io" target="_blank" rel="noopener">RaceHQ.io ↗</a></li>
+  </ul>
+
+  <div class="nav-search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Search races, gear...">
+  </div>
+</nav>
+
+<!-- ============================================================
+  HOME PAGE
+============================================================ -->
+<div id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-label">🏁 Race Season is Here</span>
+      <h1>Everything Needed to Get to <span>The Starting Line.</span></h1>
+      <p class="hero-sub">Discover top endurance races, curated gear picks, and the tools every athlete needs — all in one place.</p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="#" onclick="showPage('races'); return false;">
+          Find Races
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn-outline" href="#">
+          Browse Gear
+        </a>
+      </div>
+    </div>
+    <span class="hero-scroll-hint">Scroll to explore</span>
+  </section>
+
+  <!-- CATEGORY SCROLLER -->
+  <div class="categories-section">
+    <div class="categories-track-wrap">
+      <div class="cat-item active">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0zm-3.5 3.5 1 4 2.5 2.5V20h1v-4.5L12 13l1-2 1.5 1.5V14h1v-2.5l-2-2.5-1-2.5c-.3-.8-1-.5-1.5 0L9 9.5l-2 1 .5 1 2-1z"/></svg>
+        </span>
+        <span class="cat-label">Running</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="5" cy="18" r="2" fill="currentColor"/><circle cx="19" cy="18" r="2" fill="currentColor"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.5"/></svg>
+        </span>
+        <span class="cat-label">Cycling</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2c-1.1 0-2 .9-2 2v4l-3 3 1.4 1.4L11 14v4l-1.5 2.5 1.7 1L13 19l1.8 2.5 1.7-1L15 18v-4l2.6 2.8L19 15.4 16 12V8c0-1.1-.9-2-2-2h-2z"/></svg>
+        </span>
+        <span class="cat-label">Triathlon</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm1 6H9l-3 9h2l1-3h6l1 3h2l-3-9zm-2.8 4 .8-2.4.8 2.4h-1.6z"/></svg>
+        </span>
+        <span class="cat-label">Duathlon</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </span>
+        <span class="cat-label">Obstacle</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 7s1.5-2 3-2 3 2 3 2 1.5-2 3-2 3 2 3 2 1.5-2 3-2 3 2 3 2v10s-1.5-2-3-2-3 2-3 2-1.5-2-3-2-3 2-3 2-1.5-2-3-2-3 2-3 2V7z"/></svg>
+        </span>
+        <span class="cat-label">Swimming</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 17l-5-5 5-5M16 17l5-5-5-5M11 19l2-14"/></svg>
+        </span>
+        <span class="cat-label">Adventure</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM8 8l-2 4h3l-1 8h8l-1-8h3L16 8H8z"/></svg>
+        </span>
+        <span class="cat-label">Fitness Racing</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 15s2-2 4-2 4 2 4 2 2-2 4-2 4 2 4 2M5 19l7-14 7 14"/></svg>
+        </span>
+        <span class="cat-label">SUP</span>
+      </div>
+      <div class="cat-item">
+        <span class="cat-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12c1-3 4-5 8-5s7 2 8 5M3 12c1 3 4 5 8 5s7-2 8-5"/><ellipse cx="12" cy="12" rx="4" ry="3"/></svg>
+        </span>
+        <span class="cat-label">Rowing</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED RACES -->
+  <section class="section">
+    <div class="section-header-row">
+      <div>
+        <div class="section-label">Featured Races</div>
+        <h2 class="section-title">Top Races Right Now</h2>
+        <p class="section-sub">Handpicked events worth training for. Updated weekly by our editorial team.</p>
+      </div>
+      <a class="view-all" href="#" onclick="showPage('races'); return false;">View All Races →</a>
+    </div>
+
+    <div class="featured-grid">
+      <!-- Hero card -->
+      <div class="race-card race-card--hero">
+        <div class="race-card-img" style="background-image: url('https://images.pexels.com/photos/1290036/pexels-photo-1290036.jpeg?auto=compress&cs=tinysrgb&w=1200')"></div>
+        <div class="race-card-overlay"></div>
+        <div class="race-card-body">
+          <span class="race-card-cat">Running</span>
+          <div class="race-card-title">Chicago Marathon 2025</div>
+          <div class="race-card-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Oct 13, 2025
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Chicago, IL
+            </span>
+            <span>26.2 mi</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Small cards -->
+      <div class="race-card race-card--std">
+        <div class="race-card-img" style="background-image: url('https://images.pexels.com/photos/2526105/pexels-photo-2526105.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-card-overlay"></div>
+        <div class="race-card-body">
+          <span class="race-card-cat">Triathlon</span>
+          <div class="race-card-title">Boulder Full Distance</div>
+          <div class="race-card-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Aug 3, 2025
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Boulder, CO
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="race-card race-card--std">
+        <div class="race-card-img" style="background-image: url('https://images.pexels.com/photos/2402777/pexels-photo-2402777.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-card-overlay"></div>
+        <div class="race-card-body">
+          <span class="race-card-cat">Obstacle</span>
+          <div class="race-card-title">Pacific OCR Challenge</div>
+          <div class="race-card-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Sep 6, 2025
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              San Diego, CA
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="race-card race-card--std">
+        <div class="race-card-img" style="background-image: url('https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-card-overlay"></div>
+        <div class="race-card-body">
+          <span class="race-card-cat">Running</span>
+          <div class="race-card-title">Austin Marathon 2025</div>
+          <div class="race-card-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Feb 16, 2025
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Austin, TX
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="race-card race-card--std">
+        <div class="race-card-img" style="background-image: url('https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-card-overlay"></div>
+        <div class="race-card-body">
+          <span class="race-card-cat">Adventure</span>
+          <div class="race-card-title">Leadville Trail 100</div>
+          <div class="race-card-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Aug 16, 2025
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Leadville, CO
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPCOMING RACES STRIP -->
+  <section class="section section-sm races-strip-section">
+    <div class="section-header-row">
+      <div>
+        <div class="section-label">Coming Up</div>
+        <h2 class="section-title">Races This Month</h2>
+      </div>
+      <a class="view-all" href="#" onclick="showPage('races'); return false;">View Calendar →</a>
+    </div>
+    <div class="races-strip">
+      <div class="race-strip-card">
+        <div class="race-strip-img" style="background-image: url('https://images.pexels.com/photos/2402777/pexels-photo-2402777.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-strip-body">
+          <div class="race-strip-cat">Running</div>
+          <div class="race-strip-name">8K San Diego Run & Dance Party</div>
+          <div class="race-strip-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> May 17, 2025</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> San Diego, CA</span>
+          </div>
+        </div>
+        <div class="race-strip-footer">
+          <div class="race-strip-dist"><span class="dist-pill">8K</span></div>
+          <a class="reg-link" href="#">Register →</a>
+        </div>
+      </div>
+
+      <div class="race-strip-card">
+        <div class="race-strip-img" style="background-image: url('https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-strip-body">
+          <div class="race-strip-cat">Cycling</div>
+          <div class="race-strip-name">Marin Century Ride</div>
+          <div class="race-strip-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> May 24, 2025</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Marin County, CA</span>
+          </div>
+        </div>
+        <div class="race-strip-footer">
+          <div class="race-strip-dist"><span class="dist-pill">50mi</span><span class="dist-pill">100mi</span></div>
+          <a class="reg-link" href="#">Register →</a>
+        </div>
+      </div>
+
+      <div class="race-strip-card">
+        <div class="race-strip-img" style="background-image: url('https://images.pexels.com/photos/2526105/pexels-photo-2526105.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-strip-body">
+          <div class="race-strip-cat">Triathlon</div>
+          <div class="race-strip-name">Austin Sprint Tri</div>
+          <div class="race-strip-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Jun 1, 2025</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Austin, TX</span>
+          </div>
+        </div>
+        <div class="race-strip-footer">
+          <div class="race-strip-dist"><span class="dist-pill">Sprint</span><span class="dist-pill">Olympic</span></div>
+          <a class="reg-link" href="#">Register →</a>
+        </div>
+      </div>
+
+      <div class="race-strip-card">
+        <div class="race-strip-img" style="background-image: url('https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+        <div class="race-strip-body">
+          <div class="race-strip-cat">Adventure</div>
+          <div class="race-strip-name">Zion 50K Trail Run</div>
+          <div class="race-strip-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Jun 14, 2025</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Springdale, UT</span>
+          </div>
+        </div>
+        <div class="race-strip-footer">
+          <div class="race-strip-dist"><span class="dist-pill">50K</span></div>
+          <a class="reg-link" href="#">Register →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDITOR'S PICKS -->
+  <section class="section">
+    <div class="section-header-row">
+      <div>
+        <div class="section-label">Editor's Picks</div>
+        <h2 class="section-title">Race of the Week</h2>
+        <p class="section-sub">Our team's curated spotlight on races, training reads, and gear worth knowing about.</p>
+      </div>
+      <a class="view-all" href="#">All Features →</a>
+    </div>
+    <div class="editors-picks-grid">
+      <div class="ep-card">
+        <div class="ep-card-img" style="background-image: url('https://images.pexels.com/photos/1290036/pexels-photo-1290036.jpeg?auto=compress&cs=tinysrgb&w=800')">
+          <span class="ep-badge">⭐ Editor's Pick</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-tag">Race of the Week</div>
+          <div class="ep-title">Why the Chicago Marathon Still Sets the Standard</div>
+          <div class="ep-desc">Flat, fast, and wildly supported. We break down why this remains the premier fall marathon for first-timers and veterans alike.</div>
+          <div class="ep-meta">
+            <span>6 min read · Running</span>
+            <a class="ep-read" href="#">Read →</a>
+          </div>
+        </div>
+      </div>
+      <div class="ep-card">
+        <div class="ep-card-img" style="background-image: url('https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=800')">
+          <span class="ep-badge">🏔 Trail Pick</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-tag">Adventure</div>
+          <div class="ep-title">Leadville 100: The Race That Changes You</div>
+          <div class="ep-desc">At 10,000 ft elevation, this iconic ultra is as much a mental challenge as a physical one. Here's what to know before you sign up.</div>
+          <div class="ep-meta">
+            <span>8 min read · Ultra</span>
+            <a class="ep-read" href="#">Read →</a>
+          </div>
+        </div>
+      </div>
+      <div class="ep-card">
+        <div class="ep-card-img" style="background-image: url('https://images.pexels.com/photos/2526105/pexels-photo-2526105.jpeg?auto=compress&cs=tinysrgb&w=800')">
+          <span class="ep-badge">🔥 Hot Right Now</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-tag">Gear Guide</div>
+          <div class="ep-title">The 10 Pieces of Gear Every Triathlete Needs in 2025</div>
+          <div class="ep-desc">From race day nutrition to aero helmets, we cover the essentials you can't show up without — and the upgrades worth the splurge.</div>
+          <div class="ep-meta">
+            <span>5 min read · Gear</span>
+            <a class="ep-read" href="#">Read →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACEHQ.IO BANNER -->
+  <div class="racehqio-banner">
+    <div>
+      <div class="section-label" style="color:rgba(255,255,255,.5)">
+        <span style="display:inline-block;width:20px;height:2px;background:rgba(255,255,255,.4);margin-right:8px;vertical-align:middle;"></span>
+        For Race Directors
+      </div>
+      <h2>Run Your Race on RaceHQ.io</h2>
+      <p>The B2B platform built for race directors. Registration, sponsor marketplace, mini-sites — everything to run a world-class event.</p>
+    </div>
+    <a class="btn-primary" href="https://racehq.io" target="_blank" rel="noopener">
+      Visit RaceHQ.io
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+    </a>
+  </div>
+
+  <!-- GEAR SECTION (Placeholder) -->
+  <section class="section gear-section">
+    <div class="section-header-row">
+      <div>
+        <div class="section-label">Gear</div>
+        <h2 class="section-title">Curated Race Day Gear</h2>
+        <p class="section-sub" style="color:rgba(255,255,255,.6)">Editor-approved picks for every discipline. Gear that makes it to the starting line.</p>
+      </div>
+      <a class="view-all" href="#" style="color:var(--yellow);border-color:var(--yellow)">All Gear →</a>
+    </div>
+    <div class="gear-grid">
+      <div class="gear-card">
+        <div class="gear-img" style="background-image: url('https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+        <div class="gear-body">
+          <div class="gear-brand">Hoka</div>
+          <div class="gear-name">Clifton 9 Road Shoe</div>
+          <div class="gear-price">$145</div>
+        </div>
+      </div>
+      <div class="gear-card">
+        <div class="gear-img" style="background-image: url('https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+        <div class="gear-body">
+          <div class="gear-brand">Garmin</div>
+          <div class="gear-name">Forerunner 965 GPS Watch</div>
+          <div class="gear-price">$599</div>
+        </div>
+      </div>
+      <div class="gear-card">
+        <div class="gear-img" style="background-image: url('https://images.pexels.com/photos/3621188/pexels-photo-3621188.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+        <div class="gear-body">
+          <div class="gear-brand">Salomon</div>
+          <div class="gear-name">Advanced Skin 12 Vest</div>
+          <div class="gear-price">$180</div>
+        </div>
+      </div>
+      <div class="gear-card">
+        <div class="gear-img" style="background-image: url('https://images.pexels.com/photos/6389214/pexels-photo-6389214.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+        <div class="gear-body">
+          <div class="gear-brand">Maurten</div>
+          <div class="gear-name">Gel 100 CAF Race Pack</div>
+          <div class="gear-price">$48</div>
+        </div>
+      </div>
+      <div class="gear-card">
+        <div class="gear-img" style="background-image: url('https://images.pexels.com/photos/3490348/pexels-photo-3490348.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+        <div class="gear-body">
+          <div class="gear-brand">Zipp</div>
+          <div class="gear-name">404 Firecrest Carbon Wheel</div>
+          <div class="gear-price">$1,750</div>
+        </div>
+      </div>
+    </div>
+    <div class="gear-cta-row">
+      <a class="btn-ghost-yellow" href="#">Browse All 200+ Products →</a>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="newsletter-inner">
+      <div class="section-label" style="justify-content:center">Newsletter</div>
+      <h2 class="section-title">Stay in Your Training Zone</h2>
+      <p>Weekly race alerts, gear drops, and editor picks — delivered every Tuesday morning. No junk. Just race intel.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Your email address">
+        <button class="btn-white">Subscribe</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section class="insta-section">
+    <div class="insta-header">
+      <div class="insta-handle">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        @racehq
+      </div>
+      <a class="insta-follow" href="#" target="_blank">Follow Us →</a>
+    </div>
+    <div class="insta-grid">
+      <div class="insta-tile" style="background-image: url('https://images.pexels.com/photos/1290036/pexels-photo-1290036.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+      <div class="insta-tile" style="background-image: url('https://images.pexels.com/photos/2526105/pexels-photo-2526105.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+      <div class="insta-tile" style="background-image: url('https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+      <div class="insta-tile" style="background-image: url('https://images.pexels.com/photos/2343465/pexels-photo-2343465.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+      <div class="insta-tile" style="background-image: url('https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+      <div class="insta-tile" style="background-image: url('https://images.pexels.com/photos/2402777/pexels-photo-2402777.jpeg?auto=compress&cs=tinysrgb&w=600')"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span style="display:inline-block;height:32px;width:auto;margin-bottom:20px;">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="430 345 475 100" height="32" width="auto"> <path fill-rule="nonzero" fill="#ffffff" d="M 461.738281 396.394531 L 447.339844 396.394531 L 447.339844 367.480469 L 461.6875 367.601562 L 461.738281 367.601562 C 469.675781 367.601562 476.136719 374.058594 476.136719 381.996094 C 476.136719 389.9375 469.675781 396.394531 461.738281 396.394531 M 488.527344 381.996094 C 488.527344 367.234375 476.523438 355.226562 461.765625 355.207031 L 434.949219 355.207031 L 434.949219 423.558594 L 447.339844 423.558594 L 447.339844 396.773438 L 473.648438 423.558594 L 491.808594 423.558594 L 473.722656 405.953125 C 482.496094 401.546875 488.527344 392.460938 488.527344 381.996094 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 449.839844 393.894531 L 461.738281 393.894531 C 468.296875 393.894531 473.632812 388.554688 473.632812 381.996094 C 473.632812 375.4375 468.296875 370.101562 461.738281 370.101562 L 449.839844 370 Z M 474.695312 421.058594 L 485.65625 421.058594 L 469.464844 405.292969 L 472.601562 403.71875 C 480.882812 399.558594 486.027344 391.234375 486.027344 381.996094 C 486.027344 368.617188 475.140625 357.722656 461.761719 357.707031 L 437.449219 357.707031 L 437.449219 421.058594 L 444.839844 421.058594 L 444.839844 364.960938 L 461.707031 365.101562 C 471.054688 365.101562 478.632812 372.679688 478.632812 381.996094 C 478.632812 391.3125 471.054688 398.894531 461.738281 398.894531 L 452.929688 398.894531 Z M 497.957031 426.058594 L 472.597656 426.058594 L 449.839844 402.886719 L 449.839844 426.058594 L 432.449219 426.058594 L 432.449219 352.707031 L 461.765625 352.707031 C 477.902344 352.726562 491.027344 365.863281 491.027344 381.996094 C 491.027344 391.980469 486.050781 401.074219 477.832031 406.464844 Z M 497.957031 426.058594 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 506.582031 423.375 L 520.121094 423.375 L 543.023438 381.28125 L 567.050781 423.375 L 581.496094 423.375 L 542.761719 354.820312 Z M 506.582031 423.375 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 568.503906 420.878906 L 577.210938 420.878906 L 542.835938 360.035156 L 510.730469 420.878906 L 518.636719 420.878906 L 542.972656 376.144531 Z M 585.78125 425.878906 L 565.601562 425.878906 L 543.074219 386.414062 L 521.609375 425.878906 L 502.4375 425.878906 L 542.6875 349.605469 Z M 585.78125 425.878906 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 616.257812 412.570312 C 603.371094 412.570312 592.886719 402.085938 592.886719 389.195312 C 592.886719 376.308594 603.371094 365.824219 616.257812 365.824219 C 622.222656 365.824219 627.902344 368.070312 632.25 372.152344 L 640.730469 363.113281 C 634.078125 356.871094 625.386719 353.429688 616.257812 353.429688 C 596.535156 353.429688 580.488281 369.472656 580.488281 389.195312 C 580.488281 408.917969 596.535156 424.964844 616.257812 424.964844 C 625.390625 424.964844 634.082031 421.523438 640.738281 415.273438 L 632.253906 406.238281 C 627.90625 410.320312 622.222656 412.570312 616.257812 412.570312 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 616.257812 355.929688 C 597.914062 355.929688 582.988281 370.851562 582.988281 389.195312 C 582.988281 407.539062 597.914062 422.464844 616.257812 422.464844 C 623.910156 422.464844 631.238281 419.863281 637.140625 415.09375 L 632.058594 409.683594 C 627.546875 413.171875 622.023438 415.066406 616.257812 415.066406 C 601.992188 415.066406 590.386719 403.464844 590.386719 389.195312 C 590.386719 374.929688 601.992188 363.324219 616.257812 363.324219 C 622.019531 363.324219 627.542969 365.21875 632.054688 368.707031 L 637.132812 363.292969 C 631.230469 358.527344 623.910156 355.929688 616.257812 355.929688 M 616.257812 427.464844 C 595.15625 427.464844 577.988281 410.296875 577.988281 389.195312 C 577.988281 368.097656 595.15625 350.929688 616.257812 350.929688 C 626.023438 350.929688 635.320312 354.609375 642.441406 361.289062 L 644.265625 363 L 632.359375 375.683594 L 630.535156 373.972656 C 626.65625 370.332031 621.582031 368.324219 616.257812 368.324219 C 604.746094 368.324219 595.386719 377.6875 595.386719 389.195312 C 595.386719 400.707031 604.746094 410.066406 616.257812 410.066406 C 621.585938 410.066406 626.660156 408.058594 630.539062 404.414062 L 632.363281 402.703125 L 644.269531 415.386719 L 642.449219 417.097656 C 635.328125 423.78125 626.027344 427.464844 616.257812 427.464844 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 794.886719 385.226562 L 762.261719 385.226562 L 762.261719 354.84375 L 748.507812 354.84375 L 748.507812 423.195312 L 762.261719 423.195312 L 762.261719 398.980469 L 794.886719 398.980469 L 794.886719 423.195312 L 808.640625 423.195312 L 808.640625 354.84375 L 794.886719 354.84375 Z M 794.886719 385.226562 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 797.386719 420.695312 L 806.140625 420.695312 L 806.140625 357.34375 L 797.386719 357.34375 L 797.386719 387.726562 L 759.761719 387.726562 L 759.761719 357.34375 L 751.007812 357.34375 L 751.007812 420.695312 L 759.761719 420.695312 L 759.761719 396.476562 L 797.386719 396.476562 Z M 811.140625 425.695312 L 792.386719 425.695312 L 792.386719 401.476562 L 764.761719 401.476562 L 764.761719 425.695312 L 746.007812 425.695312 L 746.007812 352.34375 L 764.761719 352.34375 L 764.761719 382.726562 L 792.386719 382.726562 L 792.386719 352.34375 L 811.140625 352.34375 Z M 811.140625 425.695312 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 654.054688 411.238281 L 654.054688 423.375 L 701.3125 423.375 L 701.3125 411.238281 L 666.191406 411.238281 L 666.191406 398.054688 L 694.53125 398.054688 L 694.53125 385.917969 L 666.191406 385.917969 L 666.191406 366.738281 L 701.3125 366.738281 L 701.3125 354.601562 L 654.054688 354.601562 Z M 654.054688 411.238281 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 656.554688 420.878906 L 698.816406 420.878906 L 698.816406 413.738281 L 663.695312 413.738281 L 663.695312 395.554688 L 692.03125 395.554688 L 692.03125 388.417969 L 663.695312 388.417969 L 663.695312 364.238281 L 698.816406 364.238281 L 698.816406 357.101562 L 656.554688 357.101562 Z M 703.816406 425.878906 L 651.554688 425.878906 L 651.554688 352.101562 L 703.816406 352.101562 L 703.816406 369.238281 L 668.695312 369.238281 L 668.695312 383.417969 L 697.03125 383.417969 L 697.03125 400.554688 L 668.695312 400.554688 L 668.695312 408.738281 L 703.816406 408.738281 Z M 703.816406 425.878906 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 832.90625 389.382812 C 832.90625 376.351562 843.507812 365.753906 856.535156 365.753906 C 869.566406 365.753906 880.167969 376.351562 880.167969 389.382812 C 880.167969 402.414062 869.566406 413.011719 856.535156 413.011719 C 843.507812 413.011719 832.90625 402.414062 832.90625 389.382812 M 888.054688 428.855469 C 888.054688 428.855469 880.128906 417.246094 879.703125 416.175781 C 887.214844 409.671875 891.980469 400.078125 891.980469 389.382812 C 891.980469 369.839844 876.082031 353.9375 856.535156 353.9375 C 836.992188 353.9375 821.089844 369.839844 821.089844 389.382812 C 821.089844 408.929688 836.992188 424.828125 856.535156 424.828125 C 861.121094 424.828125 865.496094 423.945312 869.519531 422.355469 C 870.109375 423.574219 878.132812 435.292969 878.132812 435.292969 Z M 888.054688 428.855469 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 856.535156 368.253906 C 844.882812 368.253906 835.40625 377.734375 835.40625 389.382812 C 835.40625 401.035156 844.882812 410.511719 856.535156 410.511719 C 868.1875 410.511719 877.667969 401.035156 877.667969 389.382812 C 877.667969 377.734375 868.1875 368.253906 856.535156 368.253906 M 856.535156 415.511719 C 842.128906 415.511719 830.40625 403.792969 830.40625 389.382812 C 830.40625 374.976562 842.128906 363.253906 856.535156 363.253906 C 870.941406 363.253906 882.667969 374.976562 882.667969 389.382812 C 882.667969 403.792969 870.941406 415.511719 856.535156 415.511719 M 870.765625 419.175781 L 871.773438 421.269531 C 872.148438 421.988281 875.441406 426.910156 878.820312 431.867188 L 884.550781 428.148438 C 880.105469 421.613281 877.695312 417.898438 877.378906 417.101562 L 876.722656 415.453125 L 878.066406 414.289062 C 885.320312 408.003906 889.480469 398.929688 889.480469 389.382812 C 889.480469 371.214844 874.703125 356.4375 856.535156 356.4375 C 838.371094 356.4375 823.589844 371.214844 823.589844 389.382812 C 823.589844 407.550781 838.371094 422.328125 856.535156 422.328125 C 860.683594 422.328125 864.742188 421.554688 868.601562 420.03125 Z M 877.449219 438.71875 L 876.070312 436.707031 C 874.207031 433.988281 870.429688 428.441406 868.464844 425.398438 C 864.613281 426.679688 860.613281 427.328125 856.535156 427.328125 C 835.613281 427.328125 818.589844 410.304688 818.589844 389.382812 C 818.589844 368.460938 835.613281 351.4375 856.535156 351.4375 C 877.460938 351.4375 894.480469 368.460938 894.480469 389.382812 C 894.480469 399.679688 890.28125 409.5 882.894531 416.644531 C 884.378906 418.953125 887.359375 423.402344 890.121094 427.445312 L 891.5625 429.558594 Z M 877.449219 438.71875 "/> </svg>
+        </span>
+        <p>Everything Needed to Get to The Starting Line. The home for endurance race athletes nationwide.</p>
+        <div class="footer-socials">
+          <a class="social-btn" href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a class="social-btn" href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a class="social-btn" href="#" aria-label="X">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.733-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a class="social-btn" href="#" aria-label="Strava">
+            <svg viewBox="0 0 24 24"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0 4 13.428h4.172"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Races</h4>
+        <ul>
+          <li><a href="#">Race Directory</a></li>
+          <li><a href="#">Running</a></li>
+          <li><a href="#">Triathlon</a></li>
+          <li><a href="#">Cycling</a></li>
+          <li><a href="#">Adventure</a></li>
+          <li><a href="#">Work With Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Gear</h4>
+        <ul>
+          <li><a href="#">All Gear</a></li>
+          <li><a href="#">Running Gear</a></li>
+          <li><a href="#">Triathlon Gear</a></li>
+          <li><a href="#">Trail Gear</a></li>
+          <li><a href="#">Advertise With Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>More</h4>
+        <ul>
+          <li><a href="#">About RaceHQ</a></li>
+          <li><a href="#">Editor's Picks</a></li>
+          <li><a href="#">Training Blog</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">hello@racehq.com</a></li>
+          <li><a href="#">Press Inquiries</a></li>
+          <li><a href="#">Partnership</a></li>
+          <li><a href="https://racehq.io" target="_blank">RaceHQ.io ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 <a href="#">Townbull Sports, LLC</a>. All rights reserved.</p>
+      <div style="display:flex;gap:20px">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /page-home -->
+
+
+<!-- ============================================================
+  RACES PAGE
+============================================================ -->
+<div id="page-races">
+
+  <div class="races-page-hero">
+    <div class="races-hero-content">
+      <h1>Find Your Next Race</h1>
+      <p>Explore hundreds of endurance events across the country — filtered by sport, distance, and location.</p>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="races-filters-bar">
+    <div class="filters-row">
+      <div class="filter-pill active">All Sports</div>
+      <div class="filter-pill">Running</div>
+      <div class="filter-pill">Cycling</div>
+      <div class="filter-pill">Triathlon</div>
+      <div class="filter-pill">Duathlon</div>
+      <div class="filter-pill">Obstacle</div>
+      <div class="filter-pill">Swimming</div>
+      <div class="filter-pill">Adventure</div>
+      <div class="filter-pill">Fitness Racing</div>
+      <div class="filter-pill">SUP</div>
+      <div class="filter-pill">Rowing</div>
+    </div>
+  </div>
+
+  <div class="races-layout">
+    <!-- SIDEBAR -->
+    <aside class="races-sidebar">
+      <div class="filter-search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="City, state, or zip...">
+      </div>
+
+      <div class="filter-group">
+        <h5>Date</h5>
+        <div class="filter-options">
+          <label class="filter-check"><input type="checkbox" checked> This Month</label>
+          <label class="filter-check"><input type="checkbox"> Next 3 Months</label>
+          <label class="filter-check"><input type="checkbox"> Next 6 Months</label>
+          <label class="filter-check"><input type="checkbox"> All Upcoming</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h5>Distance</h5>
+        <div class="filter-options">
+          <label class="filter-check"><input type="checkbox"> 5K / 8K / 10K</label>
+          <label class="filter-check"><input type="checkbox"> Half Marathon</label>
+          <label class="filter-check"><input type="checkbox"> Marathon</label>
+          <label class="filter-check"><input type="checkbox"> Ultra / 50K+</label>
+          <label class="filter-check"><input type="checkbox"> Sprint</label>
+          <label class="filter-check"><input type="checkbox"> Olympic</label>
+          <label class="filter-check"><input type="checkbox"> Half Distance</label>
+          <label class="filter-check"><input type="checkbox"> Full Distance</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h5>Region</h5>
+        <div class="filter-options">
+          <label class="filter-check"><input type="checkbox"> West Coast</label>
+          <label class="filter-check"><input type="checkbox"> Mountain West</label>
+          <label class="filter-check"><input type="checkbox"> Midwest</label>
+          <label class="filter-check"><input type="checkbox"> Southeast</label>
+          <label class="filter-check"><input type="checkbox"> Northeast</label>
+          <label class="filter-check"><input type="checkbox"> Southwest</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h5>Terrain</h5>
+        <div class="filter-options">
+          <label class="filter-check"><input type="checkbox"> Road</label>
+          <label class="filter-check"><input type="checkbox"> Trail</label>
+          <label class="filter-check"><input type="checkbox"> Track</label>
+          <label class="filter-check"><input type="checkbox"> Open Water</label>
+          <label class="filter-check"><input type="checkbox"> Mixed</label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RESULTS GRID -->
+    <div class="races-results">
+      <div class="results-header">
+        <p class="results-count">Showing <strong>247 races</strong> near you</p>
+        <select class="sort-select">
+          <option>Sort: Date (Soonest)</option>
+          <option>Sort: Distance</option>
+          <option>Sort: A–Z</option>
+          <option>Sort: Most Popular</option>
+        </select>
+      </div>
+
+      <div class="races-grid">
+
+        <div class="dir-card">
+          <div class="dir-card-img" style="background-image: url('https://images.pexels.com/photos/2402777/pexels-photo-2402777.jpeg?auto=compress&cs=tinysrgb&w=800')">
+            <span class="dir-card-badge">Featured</span>
+          </div>
+          <div class="dir-card-body">
+            <div class="dir-card-cat">Running</div>
+            <div class="dir-card-name">8K San Diego Run & Dance Party</div>
+            <div class="dir-card-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> May 17, 2025</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> San Diego, CA</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Road · Flat</span>
+            </div>
+            <div class="dir-card-footer">
+              <div class="dir-card-dists"><span class="dist-pill">8K</span></div>
+              <a class="dir-card-reg" href="#">Register →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dir-card">
+          <div class="dir-card-img" style="background-image: url('https://images.pexels.com/photos/1290036/pexels-photo-1290036.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+          <div class="dir-card-body">
+            <div class="dir-card-cat">Running</div>
+            <div class="dir-card-name">Chicago Marathon 2025</div>
+            <div class="dir-card-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Oct 13, 2025</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Chicago, IL</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Road · Flat</span>
+            </div>
+            <div class="dir-card-footer">
+              <div class="dir-card-dists"><span class="dist-pill">26.2 mi</span></div>
+              <a class="dir-card-reg" href="#">Register →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dir-card">
+          <div class="dir-card-img" style="background-image: url('https://images.pexels.com/photos/2526105/pexels-photo-2526105.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+          <div class="dir-card-body">
+            <div class="dir-card-cat">Triathlon</div>
+            <div class="dir-card-name">Boulder Full Distance Triathlon</div>
+            <div class="dir-card-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Aug 3, 2025</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Boulder, CO</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Mixed Terrain</span>
+            </div>
+            <div class="dir-card-footer">
+              <div class="dir-card-dists"><span class="dist-pill">Full</span><span class="dist-pill">Half</span></div>
+              <a class="dir-card-reg" href="#">Register →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dir-card">
+          <div class="dir-card-img" style="background-image: url('https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=800')">
+            <span class="dir-card-badge">Selling Fast</span>
+          </div>
+          <div class="dir-card-body">
+            <div class="dir-card-cat">Adventure</div>
+            <div class="dir-card-name">Leadville Trail 100 Run</div>
+            <div class="dir-card-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Aug 16, 2025</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Leadville, CO</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Trail · Mountain</span>
+            </div>
+            <div class="dir-card-footer">
+              <div class="dir-card-dists"><span class="dist-pill">100mi</span></div>
+              <a class="dir-card-reg" href="#">Register →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dir-card">
+          <div class="dir-card-img" style="background-image: url('https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+          <div class="dir-card-body">
+            <div class="dir-card-cat">Running</div>
+            <div class="dir-card-name">Austin Marathon</div>
+            <div class="dir-card-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Feb 16, 2026</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Austin, TX</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Road</span>
+            </div>
+            <div class="dir-card-footer">
+              <div class="dir-card-dists"><span class="dist-pill">Half</span><span class="dist-pill">Full</span></div>
+              <a class="dir-card-reg" href="#">Register →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dir-card">
+          <div class="dir-card-img" style="background-image: url('https://images.pexels.com/photos/2343465/pexels-photo-2343465.jpeg?auto=compress&cs=tinysrgb&w=800')"></div>
+          <div class="dir-card-body">
+            <div class="dir-card-cat">Obstacle</div>
+            <div class="dir-card-name">Pacific OCR Challenge</div>
+            <div class="dir-card-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Sep 6, 2025</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> San Diego, CA</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Trail · Obstacles</span>
+            </div>
+            <div class="dir-card-footer">
+              <div class="dir-card-dists"><span class="dist-pill">5K</span><span class="dist-pill">15K</span></div>
+              <a class="dir-card-reg" href="#">Register →</a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /races-grid -->
+    </div><!-- /races-results -->
+  </div><!-- /races-layout -->
+
+  <!-- Footer on races page too -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span style="display:inline-block;height:32px;width:auto;margin-bottom:20px;">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="430 345 475 100" height="32" width="auto"> <path fill-rule="nonzero" fill="#ffffff" d="M 461.738281 396.394531 L 447.339844 396.394531 L 447.339844 367.480469 L 461.6875 367.601562 L 461.738281 367.601562 C 469.675781 367.601562 476.136719 374.058594 476.136719 381.996094 C 476.136719 389.9375 469.675781 396.394531 461.738281 396.394531 M 488.527344 381.996094 C 488.527344 367.234375 476.523438 355.226562 461.765625 355.207031 L 434.949219 355.207031 L 434.949219 423.558594 L 447.339844 423.558594 L 447.339844 396.773438 L 473.648438 423.558594 L 491.808594 423.558594 L 473.722656 405.953125 C 482.496094 401.546875 488.527344 392.460938 488.527344 381.996094 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 449.839844 393.894531 L 461.738281 393.894531 C 468.296875 393.894531 473.632812 388.554688 473.632812 381.996094 C 473.632812 375.4375 468.296875 370.101562 461.738281 370.101562 L 449.839844 370 Z M 474.695312 421.058594 L 485.65625 421.058594 L 469.464844 405.292969 L 472.601562 403.71875 C 480.882812 399.558594 486.027344 391.234375 486.027344 381.996094 C 486.027344 368.617188 475.140625 357.722656 461.761719 357.707031 L 437.449219 357.707031 L 437.449219 421.058594 L 444.839844 421.058594 L 444.839844 364.960938 L 461.707031 365.101562 C 471.054688 365.101562 478.632812 372.679688 478.632812 381.996094 C 478.632812 391.3125 471.054688 398.894531 461.738281 398.894531 L 452.929688 398.894531 Z M 497.957031 426.058594 L 472.597656 426.058594 L 449.839844 402.886719 L 449.839844 426.058594 L 432.449219 426.058594 L 432.449219 352.707031 L 461.765625 352.707031 C 477.902344 352.726562 491.027344 365.863281 491.027344 381.996094 C 491.027344 391.980469 486.050781 401.074219 477.832031 406.464844 Z M 497.957031 426.058594 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 506.582031 423.375 L 520.121094 423.375 L 543.023438 381.28125 L 567.050781 423.375 L 581.496094 423.375 L 542.761719 354.820312 Z M 506.582031 423.375 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 568.503906 420.878906 L 577.210938 420.878906 L 542.835938 360.035156 L 510.730469 420.878906 L 518.636719 420.878906 L 542.972656 376.144531 Z M 585.78125 425.878906 L 565.601562 425.878906 L 543.074219 386.414062 L 521.609375 425.878906 L 502.4375 425.878906 L 542.6875 349.605469 Z M 585.78125 425.878906 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 616.257812 412.570312 C 603.371094 412.570312 592.886719 402.085938 592.886719 389.195312 C 592.886719 376.308594 603.371094 365.824219 616.257812 365.824219 C 622.222656 365.824219 627.902344 368.070312 632.25 372.152344 L 640.730469 363.113281 C 634.078125 356.871094 625.386719 353.429688 616.257812 353.429688 C 596.535156 353.429688 580.488281 369.472656 580.488281 389.195312 C 580.488281 408.917969 596.535156 424.964844 616.257812 424.964844 C 625.390625 424.964844 634.082031 421.523438 640.738281 415.273438 L 632.253906 406.238281 C 627.90625 410.320312 622.222656 412.570312 616.257812 412.570312 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 616.257812 355.929688 C 597.914062 355.929688 582.988281 370.851562 582.988281 389.195312 C 582.988281 407.539062 597.914062 422.464844 616.257812 422.464844 C 623.910156 422.464844 631.238281 419.863281 637.140625 415.09375 L 632.058594 409.683594 C 627.546875 413.171875 622.023438 415.066406 616.257812 415.066406 C 601.992188 415.066406 590.386719 403.464844 590.386719 389.195312 C 590.386719 374.929688 601.992188 363.324219 616.257812 363.324219 C 622.019531 363.324219 627.542969 365.21875 632.054688 368.707031 L 637.132812 363.292969 C 631.230469 358.527344 623.910156 355.929688 616.257812 355.929688 M 616.257812 427.464844 C 595.15625 427.464844 577.988281 410.296875 577.988281 389.195312 C 577.988281 368.097656 595.15625 350.929688 616.257812 350.929688 C 626.023438 350.929688 635.320312 354.609375 642.441406 361.289062 L 644.265625 363 L 632.359375 375.683594 L 630.535156 373.972656 C 626.65625 370.332031 621.582031 368.324219 616.257812 368.324219 C 604.746094 368.324219 595.386719 377.6875 595.386719 389.195312 C 595.386719 400.707031 604.746094 410.066406 616.257812 410.066406 C 621.585938 410.066406 626.660156 408.058594 630.539062 404.414062 L 632.363281 402.703125 L 644.269531 415.386719 L 642.449219 417.097656 C 635.328125 423.78125 626.027344 427.464844 616.257812 427.464844 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 794.886719 385.226562 L 762.261719 385.226562 L 762.261719 354.84375 L 748.507812 354.84375 L 748.507812 423.195312 L 762.261719 423.195312 L 762.261719 398.980469 L 794.886719 398.980469 L 794.886719 423.195312 L 808.640625 423.195312 L 808.640625 354.84375 L 794.886719 354.84375 Z M 794.886719 385.226562 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 797.386719 420.695312 L 806.140625 420.695312 L 806.140625 357.34375 L 797.386719 357.34375 L 797.386719 387.726562 L 759.761719 387.726562 L 759.761719 357.34375 L 751.007812 357.34375 L 751.007812 420.695312 L 759.761719 420.695312 L 759.761719 396.476562 L 797.386719 396.476562 Z M 811.140625 425.695312 L 792.386719 425.695312 L 792.386719 401.476562 L 764.761719 401.476562 L 764.761719 425.695312 L 746.007812 425.695312 L 746.007812 352.34375 L 764.761719 352.34375 L 764.761719 382.726562 L 792.386719 382.726562 L 792.386719 352.34375 L 811.140625 352.34375 Z M 811.140625 425.695312 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 654.054688 411.238281 L 654.054688 423.375 L 701.3125 423.375 L 701.3125 411.238281 L 666.191406 411.238281 L 666.191406 398.054688 L 694.53125 398.054688 L 694.53125 385.917969 L 666.191406 385.917969 L 666.191406 366.738281 L 701.3125 366.738281 L 701.3125 354.601562 L 654.054688 354.601562 Z M 654.054688 411.238281 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 656.554688 420.878906 L 698.816406 420.878906 L 698.816406 413.738281 L 663.695312 413.738281 L 663.695312 395.554688 L 692.03125 395.554688 L 692.03125 388.417969 L 663.695312 388.417969 L 663.695312 364.238281 L 698.816406 364.238281 L 698.816406 357.101562 L 656.554688 357.101562 Z M 703.816406 425.878906 L 651.554688 425.878906 L 651.554688 352.101562 L 703.816406 352.101562 L 703.816406 369.238281 L 668.695312 369.238281 L 668.695312 383.417969 L 697.03125 383.417969 L 697.03125 400.554688 L 668.695312 400.554688 L 668.695312 408.738281 L 703.816406 408.738281 Z M 703.816406 425.878906 "/> <path fill-rule="nonzero" fill="#ffffff" d="M 832.90625 389.382812 C 832.90625 376.351562 843.507812 365.753906 856.535156 365.753906 C 869.566406 365.753906 880.167969 376.351562 880.167969 389.382812 C 880.167969 402.414062 869.566406 413.011719 856.535156 413.011719 C 843.507812 413.011719 832.90625 402.414062 832.90625 389.382812 M 888.054688 428.855469 C 888.054688 428.855469 880.128906 417.246094 879.703125 416.175781 C 887.214844 409.671875 891.980469 400.078125 891.980469 389.382812 C 891.980469 369.839844 876.082031 353.9375 856.535156 353.9375 C 836.992188 353.9375 821.089844 369.839844 821.089844 389.382812 C 821.089844 408.929688 836.992188 424.828125 856.535156 424.828125 C 861.121094 424.828125 865.496094 423.945312 869.519531 422.355469 C 870.109375 423.574219 878.132812 435.292969 878.132812 435.292969 Z M 888.054688 428.855469 "/> <path fill-rule="nonzero" fill="#fdfdfd" d="M 856.535156 368.253906 C 844.882812 368.253906 835.40625 377.734375 835.40625 389.382812 C 835.40625 401.035156 844.882812 410.511719 856.535156 410.511719 C 868.1875 410.511719 877.667969 401.035156 877.667969 389.382812 C 877.667969 377.734375 868.1875 368.253906 856.535156 368.253906 M 856.535156 415.511719 C 842.128906 415.511719 830.40625 403.792969 830.40625 389.382812 C 830.40625 374.976562 842.128906 363.253906 856.535156 363.253906 C 870.941406 363.253906 882.667969 374.976562 882.667969 389.382812 C 882.667969 403.792969 870.941406 415.511719 856.535156 415.511719 M 870.765625 419.175781 L 871.773438 421.269531 C 872.148438 421.988281 875.441406 426.910156 878.820312 431.867188 L 884.550781 428.148438 C 880.105469 421.613281 877.695312 417.898438 877.378906 417.101562 L 876.722656 415.453125 L 878.066406 414.289062 C 885.320312 408.003906 889.480469 398.929688 889.480469 389.382812 C 889.480469 371.214844 874.703125 356.4375 856.535156 356.4375 C 838.371094 356.4375 823.589844 371.214844 823.589844 389.382812 C 823.589844 407.550781 838.371094 422.328125 856.535156 422.328125 C 860.683594 422.328125 864.742188 421.554688 868.601562 420.03125 Z M 877.449219 438.71875 L 876.070312 436.707031 C 874.207031 433.988281 870.429688 428.441406 868.464844 425.398438 C 864.613281 426.679688 860.613281 427.328125 856.535156 427.328125 C 835.613281 427.328125 818.589844 410.304688 818.589844 389.382812 C 818.589844 368.460938 835.613281 351.4375 856.535156 351.4375 C 877.460938 351.4375 894.480469 368.460938 894.480469 389.382812 C 894.480469 399.679688 890.28125 409.5 882.894531 416.644531 C 884.378906 418.953125 887.359375 423.402344 890.121094 427.445312 L 891.5625 429.558594 Z M 877.449219 438.71875 "/> </svg>
+        </span>
+        <p>Everything Needed to Get to The Starting Line.</p>
+        <div class="footer-socials">
+          <a class="social-btn" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Races</h4><ul><li><a href="#">Race Directory</a></li><li><a href="#">Work With Us</a></li></ul></div>
+      <div class="footer-col"><h4>Gear</h4><ul><li><a href="#">All Gear</a></li><li><a href="#">Advertise With Us</a></li></ul></div>
+      <div class="footer-col"><h4>More</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul><li><a href="#">hello@racehq.com</a></li><li><a href="https://racehq.io" target="_blank">RaceHQ.io ↗</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 <a href="#">Townbull Sports, LLC</a>. All rights reserved.</p>
+      <div style="display:flex;gap:20px"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></div>
+    </div>
+  </footer>
+
+</div><!-- /page-races -->
+
+<script>
+  // ── Page switching ──────────────────────────────────────────
+  function showPage(page) {
+    document.getElementById('page-home').style.display = page === 'home' ? 'block' : 'none';
+    document.getElementById('page-races').style.display = page === 'races' ? 'block' : 'none';
+    document.getElementById('nav-races').classList.toggle('active', page === 'races');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Nav hide-on-scroll behavior ─────────────────────────────
+  let lastY = 0;
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    nav.classList.toggle('hidden', y > lastY && y > 80);
+    nav.classList.toggle('scrolled', y > 20);
+    lastY = y;
+  }, { passive: true });
+
+  // ── Category scroller ───────────────────────────────────────
+  document.querySelectorAll('.cat-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // ── Filter pills (races page) ───────────────────────────────
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
