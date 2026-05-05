@@ -1996,9 +1996,19 @@
 
     <!-- Form -->
     <div id="popup-form-wrap">
-      <form id="popup-form" style="display:flex;gap:10px;flex-wrap:wrap;" onsubmit="submitPopup(event)">
+      <form
+        action="https://antonvillatoro.us3.list-manage.com/subscribe/post?u=ec2c230b03abf710af4d5bcc9&amp;id=5c8e86798e&amp;f_id=001023e2f0"
+        method="post"
+        id="popup-form"
+        name="mc-embedded-subscribe-form"
+        target="_blank"
+        style="display:flex;gap:10px;flex-wrap:wrap;"
+        onsubmit="submitPopup(event)"
+      >
+        <!-- Email input -->
         <input
           type="email"
+          name="EMAIL"
           id="popup-email"
           placeholder="Your email address"
           required
@@ -2017,7 +2027,11 @@
           onfocus="this.style.borderColor='rgba(255,255,255,.5)'"
           onblur="this.style.borderColor='rgba(255,255,255,.2)'"
         >
-        <button type="submit" style="
+        <!-- Mailchimp bot honeypot — do not remove -->
+        <div aria-hidden="true" style="position:absolute;left:-5000px;">
+          <input type="text" name="b_ec2c230b03abf710af4d5bcc9_5c8e86798e" tabindex="-1" value="">
+        </div>
+        <button type="submit" name="subscribe" style="
           flex-shrink:0;
           background:linear-gradient(135deg,#B026FF,#FF12F0);
           color:#ffffff;
@@ -2103,11 +2117,13 @@
   };
 
   window.submitPopup = function(e) {
-    e.preventDefault();
+    // Let the form POST to Mailchimp in a background tab (target=_blank on form)
+    // then show success state locally
     document.getElementById('popup-form-wrap').style.display = 'none';
     document.getElementById('popup-success').style.display = 'block';
     setCookie('rhq_nl_dismissed', '1', 30);
     setTimeout(function() { window.closePopup(); }, 3000);
+    // Form submits naturally to Mailchimp via target="_blank"
   };
 
   window.addEventListener('scroll', onScroll, { passive: true });
