@@ -1948,61 +1948,84 @@
 <!-- ============================================================
   SCROLL-AWAY NEWSLETTER POPUP
 ============================================================ -->
+<!-- ============================================================
+  NEWSLETTER POPUP — mobile-first centered modal
+============================================================ -->
+
+<!-- Backdrop -->
+<div id="popup-backdrop" onclick="closePopup()" style="
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(31,5,59,.55);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  z-index:1999;
+  opacity:0;
+  transition:opacity .3s;
+"></div>
+
+<!-- Modal — centered, scrollable on small screens -->
 <div id="newsletter-popup" style="
-  position: fixed;
-  bottom: -420px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
-  width: min(520px, calc(100vw - 32px));
-  background: #1F053B;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(31,5,59,.5), 0 0 0 1px rgba(255,255,255,.08);
-  transition: bottom .55s cubic-bezier(.34,1.56,.64,1);
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(.94);
+  z-index:2000;
+  width:min(500px, calc(100vw - 28px));
+  max-height:calc(100svh - 40px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  background:#1F053B;
+  border-radius:20px;
+  box-shadow:0 24px 64px rgba(31,5,59,.6), 0 0 0 1px rgba(255,255,255,.08);
+  opacity:0;
+  transition:opacity .3s ease, transform .35s cubic-bezier(.34,1.3,.64,1);
 ">
   <!-- Accent bar -->
-  <div style="height:4px;background:linear-gradient(90deg,#B026FF,#FF12F0);"></div>
+  <div style="height:4px;background:linear-gradient(90deg,#B026FF,#FF12F0);border-radius:20px 20px 0 0;flex-shrink:0;"></div>
 
-  <!-- Close button -->
-  <button id="popup-close" onclick="closePopup()" style="
-    position:absolute;top:14px;right:16px;
-    width:30px;height:30px;border-radius:50%;
-    background:rgba(255,255,255,.1);border:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    color:rgba(255,255,255,.7);font-size:16px;line-height:1;
-    transition:background .18s;
-  " onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">✕</button>
+  <!-- Close button — large tap target, always visible top-right -->
+  <button
+    onclick="closePopup()"
+    style="
+      position:sticky;
+      top:0;
+      float:right;
+      margin:12px 12px 0 0;
+      width:40px;height:40px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+      border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      color:#ffffff;font-size:18px;line-height:1;
+      z-index:10;
+      flex-shrink:0;
+      -webkit-tap-highlight-color:transparent;
+    "
+  >✕</button>
 
   <!-- Content -->
-  <div style="padding:36px 40px 40px;">
-    <!-- Icon row -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-      <span style="font-size:26px;">🏁</span>
+  <div style="padding:8px 28px 32px;clear:both;">
+    <!-- Icon + label -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="font-size:24px;">🏁</span>
       <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#FF12F0;">Race Intel — Free Weekly</span>
     </div>
 
-    <h3 style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;color:#ffffff;letter-spacing:-.02em;line-height:1.15;margin-bottom:12px;">
-      Stay Ahead of<br>The Starting Line.
+    <h3 style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:clamp(1.25rem,5vw,1.8rem);font-weight:700;color:#ffffff;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;">
+      Stay Ahead of The Starting Line.
     </h3>
-    <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:.9rem;font-weight:300;color:rgba(255,255,255,.7);line-height:1.65;margin-bottom:28px;">
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:.875rem;font-weight:300;color:rgba(255,255,255,.7);line-height:1.65;margin-bottom:20px;">
       Get the latest race news, exclusive gear deals, training tips, and editor picks — delivered every Tuesday. No spam, just signal.
     </p>
 
-    <!-- Perks row -->
-    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:28px;">
-      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;">
-        <span style="color:#F2CF00;">✓</span> Race alerts
-      </span>
-      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;">
-        <span style="color:#F2CF00;">✓</span> Gear deals
-      </span>
-      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;">
-        <span style="color:#F2CF00;">✓</span> Training tips
-      </span>
-      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;">
-        <span style="color:#F2CF00;">✓</span> Editor picks
-      </span>
+    <!-- Perks -->
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
+      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;"><span style="color:#F2CF00;">✓</span> Race alerts</span>
+      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;"><span style="color:#F2CF00;">✓</span> Gear deals</span>
+      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;"><span style="color:#F2CF00;">✓</span> Training tips</span>
+      <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;"><span style="color:#F2CF00;">✓</span> Editor picks</span>
     </div>
 
     <!-- Form -->
@@ -2013,10 +2036,9 @@
         id="popup-form"
         name="mc-embedded-subscribe-form"
         target="_blank"
-        style="display:flex;gap:10px;flex-wrap:wrap;"
+        style="display:flex;flex-direction:column;gap:10px;"
         onsubmit="submitPopup(event)"
       >
-        <!-- Email input -->
         <input
           type="email"
           name="EMAIL"
@@ -2024,69 +2046,55 @@
           placeholder="Your email address"
           required
           style="
-            flex:1;min-width:200px;
-            padding:13px 18px;
+            width:100%;
+            padding:14px 20px;
             border:2px solid rgba(255,255,255,.2);
             border-radius:999px;
             background:rgba(255,255,255,.08);
             color:#ffffff;
             font-family:'Helvetica Neue',Arial,sans-serif;
-            font-size:14px;
+            font-size:16px;
             outline:none;
-            transition:border-color .18s;
+            box-sizing:border-box;
           "
-          onfocus="this.style.borderColor='rgba(255,255,255,.5)'"
-          onblur="this.style.borderColor='rgba(255,255,255,.2)'"
         >
         <!-- Mailchimp bot honeypot — do not remove -->
         <div aria-hidden="true" style="position:absolute;left:-5000px;">
           <input type="text" name="b_ec2c230b03abf710af4d5bcc9_5c8e86798e" tabindex="-1" value="">
         </div>
         <button type="submit" name="subscribe" style="
-          flex-shrink:0;
+          width:100%;
           background:linear-gradient(135deg,#B026FF,#FF12F0);
           color:#ffffff;
           font-family:'Helvetica Neue',Arial,sans-serif;
-          font-size:13px;font-weight:700;
+          font-size:14px;font-weight:700;
           letter-spacing:.06em;text-transform:uppercase;
-          padding:13px 26px;border-radius:999px;
+          padding:14px;border-radius:999px;
           border:none;cursor:pointer;
-          transition:opacity .18s;
-          white-space:nowrap;
-        " onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+          -webkit-tap-highlight-color:transparent;
+        ">
           Subscribe →
         </button>
       </form>
-      <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;text-align:center;">
+      <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,.35);margin-top:10px;text-align:center;">
         Join 12,000+ athletes. Unsubscribe anytime.
       </p>
     </div>
 
-    <!-- Success state (hidden) -->
-    <div id="popup-success" style="display:none;text-align:center;padding:8px 0;">
-      <div style="font-size:32px;margin-bottom:12px;">🎉</div>
+    <!-- Success state -->
+    <div id="popup-success" style="display:none;text-align:center;padding:12px 0;">
+      <div style="font-size:36px;margin-bottom:12px;">🎉</div>
       <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:1rem;font-weight:700;color:#ffffff;margin-bottom:6px;">You're on the list!</p>
       <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:.875rem;font-weight:300;color:rgba(255,255,255,.6);">First issue lands in your inbox Tuesday.</p>
     </div>
   </div>
 </div>
 
-<!-- Backdrop -->
-<div id="popup-backdrop" onclick="closePopup()" style="
-  display:none;
-  position:fixed;inset:0;
-  background:rgba(31,5,59,.5);
-  backdrop-filter:blur(4px);
-  z-index:1999;
-  transition:opacity .3s;
-"></div>
-
 <script>
 (function() {
   var shown = false;
   var dismissed = false;
 
-  // Check cookie — don't show again for 7 days after dismiss
   function getCookie(name) {
     var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? match[2] : null;
@@ -2099,42 +2107,51 @@
 
   if (getCookie('rhq_nl_dismissed')) return;
 
-  // Show after scrolling 40% down the page
   function onScroll() {
     if (shown || dismissed) return;
     var scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-    if (scrollPct > 0.40) {
-      showPopup();
-    }
+    if (scrollPct > 0.40) showPopup();
   }
 
   function showPopup() {
     shown = true;
-    var popup = document.getElementById('newsletter-popup');
+    var popup   = document.getElementById('newsletter-popup');
     var backdrop = document.getElementById('popup-backdrop');
+    // Show elements
     backdrop.style.display = 'block';
-    setTimeout(function() { backdrop.style.opacity = '1'; }, 10);
-    setTimeout(function() { popup.style.bottom = '32px'; }, 50);
+    popup.style.display = 'block';
+    // Animate in on next frame
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        backdrop.style.opacity = '1';
+        popup.style.opacity = '1';
+        popup.style.transform = 'translate(-50%,-50%) scale(1)';
+      });
+    });
+    // Prevent body scroll on iOS while modal open
+    document.body.style.overflow = 'hidden';
   }
 
   window.closePopup = function() {
     dismissed = true;
     setCookie('rhq_nl_dismissed', '1', 7);
-    var popup = document.getElementById('newsletter-popup');
+    var popup   = document.getElementById('newsletter-popup');
     var backdrop = document.getElementById('popup-backdrop');
-    popup.style.bottom = '-420px';
+    popup.style.opacity = '0';
+    popup.style.transform = 'translate(-50%,-50%) scale(.94)';
     backdrop.style.opacity = '0';
-    setTimeout(function() { backdrop.style.display = 'none'; }, 300);
+    document.body.style.overflow = '';
+    setTimeout(function() {
+      popup.style.display = 'none';
+      backdrop.style.display = 'none';
+    }, 320);
   };
 
   window.submitPopup = function(e) {
-    // Let the form POST to Mailchimp in a background tab (target=_blank on form)
-    // then show success state locally
     document.getElementById('popup-form-wrap').style.display = 'none';
     document.getElementById('popup-success').style.display = 'block';
     setCookie('rhq_nl_dismissed', '1', 30);
     setTimeout(function() { window.closePopup(); }, 3000);
-    // Form submits naturally to Mailchimp via target="_blank"
   };
 
   window.addEventListener('scroll', onScroll, { passive: true });
