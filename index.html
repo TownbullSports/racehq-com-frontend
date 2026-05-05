@@ -1555,10 +1555,21 @@
       <div class="section-label" style="justify-content:center">Newsletter</div>
       <h2 class="section-title">Stay in Your Training Zone</h2>
       <p>Weekly race alerts, gear drops, and editor picks — delivered every Tuesday morning. No junk. Just race intel.</p>
-      <div class="newsletter-form">
-        <input type="email" placeholder="Your email address">
-        <button class="btn-white">Subscribe</button>
-      </div>
+      <form
+        class="newsletter-form"
+        action="https://antonvillatoro.us3.list-manage.com/subscribe/post?u=ec2c230b03abf710af4d5bcc9&amp;id=5c8e86798e&amp;f_id=001023e2f0"
+        method="post"
+        name="mc-embedded-subscribe-form"
+        target="_blank"
+        onsubmit="this.querySelector('.btn-white').textContent='You\'re in! 🎉';"
+      >
+        <input type="email" name="EMAIL" placeholder="Your email address" required>
+        <!-- Mailchimp bot honeypot — do not remove -->
+        <div aria-hidden="true" style="position:absolute;left:-5000px;">
+          <input type="text" name="b_ec2c230b03abf710af4d5bcc9_5c8e86798e" tabindex="-1" value="">
+        </div>
+        <button type="submit" name="subscribe" class="btn-white">Subscribe</button>
+      </form>
     </div>
   </section>
 
