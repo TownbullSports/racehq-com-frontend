@@ -1381,6 +1381,109 @@
     .dir-card--featured-hero .dir-card-name { font-size: 1.1rem; }
   }
 
+
+  /* ============================================================
+     MOBILE FIXES
+  ============================================================ */
+
+  /* Run8k modal — collapse to single column on mobile */
+  @media (max-width: 640px) {
+    /* Modals */
+    #run8k-modal > div:last-child,
+    .beam-modal-inner {
+      grid-template-columns: 1fr !important;
+    }
+    #run8k-modal [style*="min-height:420px"],
+    #run8k-modal [style*="min-height: 420px"] {
+      min-height: 200px !important;
+      height: 200px;
+    }
+    #run8k-modal [style*="padding:36px"],
+    #run8k-modal [style*="padding: 36px"] {
+      padding: 20px !important;
+    }
+    /* Hero section */
+    .hero-content { padding: 0 20px 56px; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero-ctas { flex-direction: column; }
+    .hero-ctas .btn-primary,
+    .hero-ctas .btn-outline { width: 100%; justify-content: center; }
+    /* Featured grid */
+    .featured-grid { grid-template-columns: 1fr; }
+    /* Sections */
+    .section, .section-sm { padding: 44px 20px; }
+    /* Newsletter */
+    .newsletter-section { padding: 52px 20px; }
+    /* Footer */
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+    /* Races hero */
+    .races-page-hero { height: 220px; }
+    .races-hero-content { padding: 0 20px 28px; }
+    .races-hero-content h1 { font-size: 1.8rem; }
+    /* Races layout */
+    .races-layout { grid-template-columns: 1fr; }
+    .races-sidebar { display: none; }
+    .races-grid { grid-template-columns: 1fr; }
+    .races-results { padding: 20px 16px; }
+    /* Gear */
+    .gear-layout { grid-template-columns: 1fr; }
+    .gear-sidebar { display: none; }
+    .gear-dir-grid { grid-template-columns: 1fr; }
+    .gear-results { padding: 20px 16px; }
+    .gear-hero-content { padding: 0 20px 28px; }
+    .gear-hero-content h1 { font-size: 1.8rem; }
+    .gear-dir-card--featured-hero { grid-template-columns: 1fr !important; }
+    .gear-dir-card--featured-hero .gear-dir-img { height: 200px; min-height: 200px; }
+    /* Dir cards */
+    .dir-card--featured-hero { grid-template-columns: 1fr !important; }
+    .dir-card--featured-hero .dir-card-img { min-height: 200px; height: 200px; }
+    .dir-card--featured-hero .dir-card-body { padding: 20px; }
+    /* Instagram grid */
+    .insta-grid { grid-template-columns: repeat(2, 1fr); }
+    /* Editors picks */
+    .editors-picks-grid { grid-template-columns: 1fr; }
+    /* Gear cards homepage */
+    .gear-grid { grid-template-columns: 1fr 1fr; }
+    /* Race strip */
+    .races-strip { grid-template-columns: 1fr; }
+    /* RaceHQ.io banner */
+    .racehqio-banner { grid-template-columns: 1fr; padding: 40px 20px; }
+    /* Category scroller text */
+    .cat-label { font-size: 11px; }
+    /* Nav search hide on very small screens */
+    @media (max-width: 380px) {
+      .nav-search { display: none; }
+    }
+  }
+
+  /* Prevent horizontal overflow globally */
+  body { overflow-x: hidden; }
+  img { max-width: 100%; }
+
+
+  .run8k-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 600px) {
+    .run8k-inner {
+      grid-template-columns: 1fr;
+    }
+    .run8k-inner > div:first-child {
+      min-height: 180px !important;
+      height: 180px;
+    }
+    .run8k-inner > div:last-child {
+      padding: 20px !important;
+    }
+    .run8k-inner h2 {
+      font-size: 1.2rem !important;
+    }
+    .run8k-inner [style*="grid-template-columns:1fr 1fr"] {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1710,9 +1813,7 @@
     max-height:calc(100svh - 40px);
     overflow-y:auto;
     box-shadow:0 32px 80px rgba(31,5,59,.4);
-    display:grid;
-    grid-template-columns:1fr 1fr;
-  ">
+  " class="run8k-inner" class="run8k-modal-inner">
     <div style="
       background-image:url('https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=800&q=80&fit=crop');
       background-size:cover;background-position:center;
