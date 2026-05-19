@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gear — Race Day Equipment & Apparel | RaceHQ</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNSIgZmlsbD0iIzFGMDUzQiIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyNCIgZm9udC1mYW1pbHk9IkhlbHZldGljYSBOZXVlLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiNGRjEyRjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlE8L3RleHQ+Cjwvc3ZnPg==">
 <style>
   /* ============================================================
      TOKENS
@@ -1730,6 +1731,36 @@
     document.querySelectorAll('#gear-sport-filters .filter-pill').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
   }
+</script>
+
+
+<!-- ============================================================
+  BEAM PRODUCT MODAL
+============================================================ -->
+<div id="beam-modal">
+  <div class="beam-modal-backdrop" onclick="closeBeamModal()"></div>
+  <div class="beam-modal-inner">
+    <div class="beam-modal-img" style="background-image:url('https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=800&q=80&fit=crop')"></div>
+    <div class="beam-modal-body">
+      <button class="beam-modal-close" onclick="closeBeamModal()">✕</button>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-p);margin-bottom:12px;font-family:var(--font);">Featured Partner</div>
+      <h2 style="font-family:var(--font);font-size:1.6rem;font-weight:700;color:var(--purple);letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;">Why Beam Gets You to the Starting Line</h2>
+      <p style="font-family:var(--font);font-size:.9rem;font-weight:300;color:var(--slate);line-height:1.7;margin-bottom:16px;">Most endurance athletes train obsessively but underinvest in what happens between workouts. Beam was built by two former pro athletes who understood that <strong style="color:var(--purple);font-weight:700;">recovery is training</strong>.</p>
+      <p style="font-family:var(--font);font-size:.9rem;font-weight:300;color:var(--slate);line-height:1.7;margin-bottom:20px;">Their <strong style="color:var(--purple);">Elevate</strong> hydration line replaces lost electrolytes with coconut water, Himalayan sea salt, and potassium bicarbonate — no sugar, no fillers. Their <strong style="color:var(--purple);">Dream</strong> sleep formula helps your nervous system wind down after hard training days.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;">
+        <div style="background:var(--silver);border-radius:10px;padding:14px;"><div style="font-size:18px;margin-bottom:6px;">⚡</div><div style="font-family:var(--font);font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:4px;">Elevate Hydration</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);line-height:1.5;">Clean electrolytes for training & race morning. From $34.99</div></div>
+        <div style="background:var(--silver);border-radius:10px;padding:14px;"><div style="font-size:18px;margin-bottom:6px;">🌙</div><div style="font-family:var(--font);font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:4px;">Dream Sleep</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);line-height:1.5;">93% of users report more restful sleep. From $39.99</div></div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="https://beamtlc.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:var(--white);font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:13px 24px;border-radius:999px;text-decoration:none;">Shop Beam →</a>
+        <button onclick="closeBeamModal()" style="font-family:var(--font);background:transparent;border:2px solid var(--silver);color:var(--slate);font-size:13px;font-weight:500;padding:13px 20px;border-radius:999px;cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function openBeamModal()  { document.getElementById('beam-modal').classList.add('open');    document.body.style.overflow='hidden'; }
+  function closeBeamModal() { document.getElementById('beam-modal').classList.remove('open'); document.body.style.overflow=''; }
 </script>
 
 </body>

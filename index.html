@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RaceHQ — Everything Needed to Get to The Starting Line</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNSIgZmlsbD0iIzFGMDUzQiIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyNCIgZm9udC1mYW1pbHk9IkhlbHZldGljYSBOZXVlLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiNGRjEyRjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlE8L3RleHQ+Cjwvc3ZnPg==">
 <style>
   /* ============================================================
      TOKENS
@@ -2196,6 +2197,62 @@ The Starting Line.
     document.querySelectorAll('#gear-sport-filters .filter-pill').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
   }
+</script>
+
+
+<!-- ============================================================
+  8K SAN DIEGO RACE MODAL
+============================================================ -->
+<div id="run8k-modal" style="display:none;position:fixed;inset:0;z-index:3000;align-items:center;justify-content:center;">
+  <div style="position:absolute;inset:0;background:rgba(31,5,59,.65);backdrop-filter:blur(6px);" onclick="closeRun8kModal()"></div>
+  <div style="
+    position:relative;z-index:1;
+    background:var(--white);
+    border-radius:20px;
+    overflow:hidden;
+    width:min(800px,calc(100vw - 32px));
+    max-height:calc(100svh - 40px);
+    overflow-y:auto;
+    box-shadow:0 32px 80px rgba(31,5,59,.4);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  ">
+    <div style="
+      background-image:url('https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=800&q=80&fit=crop');
+      background-size:cover;background-position:center;
+      min-height:420px;position:relative;
+    ">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(31,5,59,.7) 0%,transparent 60%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:24px;">
+        <span style="display:inline-block;background:var(--yellow);color:var(--purple);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:999px;margin-bottom:10px;">⭐ Featured Event</span>
+        <div style="font-family:var(--font);font-size:1.3rem;font-weight:700;color:var(--white);line-height:1.2;">8K Run Series<br>&amp; Dance Party</div>
+        <div style="font-family:var(--font);font-size:.875rem;font-weight:300;color:rgba(255,255,255,.8);margin-top:6px;">San Diego, CA · Liberty Station</div>
+      </div>
+    </div>
+    <div style="padding:36px;display:flex;flex-direction:column;justify-content:flex-start;">
+      <button onclick="closeRun8kModal()" style="position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(31,5,59,.08);border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
+      <div style="font-family:var(--font);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-p);margin-bottom:10px;">Running · San Diego</div>
+      <h2 style="font-family:var(--font);font-size:1.5rem;font-weight:700;color:var(--purple);letter-spacing:-.02em;line-height:1.15;margin-bottom:14px;">RUN. WALK. GROOVE.</h2>
+      <p style="font-family:var(--font);font-size:.875rem;font-weight:300;color:var(--slate);line-height:1.7;margin-bottom:16px;">The 8K Run Series &amp; Dance Party is where wellness, culture, and community collide. 10,000 steps at a time through one of San Diego's most iconic venues — Liberty Station — followed by a full-on dance party at the finish line.</p>
+      <p style="font-family:var(--font);font-size:.875rem;font-weight:300;color:var(--slate);line-height:1.7;margin-bottom:20px;">Whether you're a seasoned runner chasing a PR or someone lacing up for the first time, this event is built for every body and every pace.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
+        <div style="background:var(--silver);border-radius:10px;padding:13px;"><div style="font-size:16px;margin-bottom:5px;">📅</div><div style="font-family:var(--font);font-size:.775rem;font-weight:700;color:var(--purple);margin-bottom:2px;">Date</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);">December 5, 2026</div></div>
+        <div style="background:var(--silver);border-radius:10px;padding:13px;"><div style="font-size:16px;margin-bottom:5px;">📍</div><div style="font-family:var(--font);font-size:.775rem;font-weight:700;color:var(--purple);margin-bottom:2px;">Location</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);">Liberty Station, San Diego CA</div></div>
+        <div style="background:var(--silver);border-radius:10px;padding:13px;"><div style="font-size:16px;margin-bottom:5px;">🏃</div><div style="font-family:var(--font);font-size:.775rem;font-weight:700;color:var(--purple);margin-bottom:2px;">Distance</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);">8K (approx. 10,000 steps)</div></div>
+        <div style="background:var(--silver);border-radius:10px;padding:13px;"><div style="font-size:16px;margin-bottom:5px;">🎧</div><div style="font-family:var(--font);font-size:.775rem;font-weight:700;color:var(--purple);margin-bottom:2px;">Vibe</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);">Run + Dance Party Finish</div></div>
+        <div style="background:var(--silver);border-radius:10px;padding:13px;"><div style="font-size:16px;margin-bottom:5px;">🌊</div><div style="font-family:var(--font);font-size:.775rem;font-weight:700;color:var(--purple);margin-bottom:2px;">Terrain</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);">Road · Flat · Scenic</div></div>
+        <div style="background:var(--silver);border-radius:10px;padding:13px;"><div style="font-size:16px;margin-bottom:5px;">🌐</div><div style="font-family:var(--font);font-size:.775rem;font-weight:700;color:var(--purple);margin-bottom:2px;">Series Cities</div><div style="font-family:var(--font);font-size:.775rem;font-weight:300;color:var(--slate);">SD · Seattle · Dallas · LA</div></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="https://run8k.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:var(--white);font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:13px 22px;border-radius:999px;text-decoration:none;">Register Now →</a>
+        <button onclick="closeRun8kModal()" style="font-family:var(--font);background:transparent;border:2px solid var(--silver);color:var(--slate);font-size:13px;font-weight:500;padding:13px 18px;border-radius:999px;cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function openRun8kModal()  { var m = document.getElementById('run8k-modal'); m.style.display='flex'; document.body.style.overflow='hidden'; }
+  function closeRun8kModal() { var m = document.getElementById('run8k-modal'); m.style.display='none'; document.body.style.overflow=''; }
 </script>
 
 </body>
